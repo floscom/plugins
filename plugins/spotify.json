@@ -75,6 +75,7 @@
         },
         {
           "action": "extract",
+          "scopeSelector": false,
           "variable": "data",
           "fields": {
             "id": "tr:nth-child(2) [data-encore-id='tableCell']"
