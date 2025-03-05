@@ -43,7 +43,14 @@
     },
     {
       "action": "click",
-      "selector": "[href*='/billing']"
+      "selector": "[href*='/subscription']"
+    },
+    {
+      "action": "click",
+      "selector": "//button[contains(text(), 'Abrechnung')]"
+    },
+    {
+      "action": "waitForNetworkIdle"
     },
     {
       "action": "click",
