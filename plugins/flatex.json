@@ -31,7 +31,7 @@
     },
     {
       "action": "runJs",
-      "script": "!window.location.href.includes('login')"
+      "script": "window.location.href.includes('next-desktop')"
     }
   ],
   "startAuth": [
