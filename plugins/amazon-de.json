@@ -107,7 +107,7 @@
         },
         {
           "action": "extract",
-          "script": "(async () => {\n  const ids = JSON.parse('{{itemsToFetch}}').map((i) => i.orderId)\n\n  const body = JSON.stringify({\n    ids,\n    reportType: 'items_report_1',\n  })\n\n  await fetch(\n    '/b2b/aba/ajax/generate-download-links?reportType=items_report_1&dateSpanSelection=PAST_12_MONTHS&language=en-GB',\n    {\n      headers: {\n        accept: '*/*',\n        'accept-language': 'en-US',\n        'content-type': 'application/json;charset=UTF-8',\n      },\n      referrerPolicy: 'strict-origin-when-cross-origin',\n      body,\n      method: 'POST',\n      mode: 'cors',\n      credentials: 'include',\n    },\n  )\n})()",
+          "script": "(async () => {\n  const ids = JSON.parse('{{itemsToFetch}}').map((i) => i.orderId)\n\n  const body = JSON.stringify({\n    ids,\n    reportType: 'items_report_1',\n  })\n\n  return await fetch(\n    '/b2b/aba/ajax/generate-download-links?reportType=items_report_1&dateSpanSelection=PAST_12_MONTHS&language=en-GB',\n    {\n      headers: {\n        accept: '*/*',\n        'accept-language': 'en-US',\n        'content-type': 'application/json;charset=UTF-8',\n      },\n      referrerPolicy: 'strict-origin-when-cross-origin',\n      body,\n      method: 'POST',\n      mode: 'cors',\n      credentials: 'include',\n    },\n  )\n    .then((r) => r.json())\n    .then((r) => r['map'])\n})()",
           "variable": "downloadLinks",
           "scopeSelector": true
         },
@@ -117,14 +117,14 @@
           "variable": "item",
           "forEach": [
             {
-              "action": "extractNetworkResponse",
-              "url": "generate-download-links",
-              "variable": "downloadLinks",
-              "transform": "(response) => { return response['map']['{{item.orderId}}']?.filter(i => i.type === 'download').map(i => ({ url: i.url, documentType: i.url?.includes('creditNote') ? 'refund' : 'invoice', documentNumber: i.fileName.replace('.pdf', '') })) || [] }"
+              "action": "extract",
+              "script": "{\n  {\n    downloadLinks\n  }\n}\n;['{{item.orderId}}']\n  ?.filter((i) => i.type === 'download')\n  .map((i) => ({\n    url: i.url,\n    documentType: i.url?.includes('creditNote') ? 'refund' : 'invoice',\n    documentNumber: i.fileName.replace('.pdf', ''),\n  })) || []",
+              "variable": "currentLinks",
+              "scopeSelector": true
             },
             {
               "action": "extractAll",
-              "script": "{{downloadLinks}}",
+              "script": "{{currentLinks}}",
               "variable": "downloadLink",
               "forEach": [
                 {
